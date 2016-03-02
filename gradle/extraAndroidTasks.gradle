@@ -1,0 +1,37 @@
+// Adds extra tasks to improve android usage
+
+project.android.applicationVariants.all {
+  it.buildType*.name.each { buildType ->
+    def adb = new File(project.android.sdkDirectory as File, '/platform-tools/adb')
+    def buildTypeString = buildType.capitalize()
+
+    task "run$buildTypeString"(type: Exec, dependsOn: "install$buildTypeString", group: 'run') {
+      description = "Builds and runs the $buildTypeString of the application."
+
+      doFirst {
+        def manifestText = new File(buildDir as File,
+            "intermediates/manifests/full/$buildType/AndroidManifest.xml").text
+
+        def manifest = new XmlSlurper().parseText(manifestText)
+        def startActivity = manifest.application.activity.find { node ->
+          node.'intent-filter'.action.find { it.'@android:name' == 'android.intent.action.MAIN' }
+        }.'@android:name'
+
+        commandLine "bash", "-c", "$adb shell am start -n ${manifest.@package}/$startActivity"
+      }
+    }
+
+    task "reinstall$buildTypeString"(type: Exec, group: 'install') {
+      description = "Attempts to install the previous built $buildTypeString apk instead of using install$buildTypeString"
+
+      doFirst {
+        def alignedFile = new File(buildDir, "/outputs/apk/$project.name-${buildType}.apk")
+        def unalignedFile = new File(buildDir, "/outputs/apk/$project.name-$buildType-unaligned.apk")
+
+        def apk = alignedFile.exists() ? alignedFile : unalignedFile
+
+        commandLine "bash", "-c", "$adb install -r $apk"
+      }
+    }
+  }
+}
