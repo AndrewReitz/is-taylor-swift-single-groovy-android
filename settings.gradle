@@ -1,0 +1,12 @@
+include 'extensions'
+
+rootProject.name = 'is-taylor-swift-single'
+
+def setBuildFile(projects) {
+  projects.each { project ->
+    project.buildFileName = "${project.name}.gradle"
+    setBuildFile(project.children)
+  }
+}
+
+setBuildFile(rootProject.children)

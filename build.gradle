@@ -2,27 +2,42 @@ buildscript {
   repositories {
     jcenter()
     maven { url 'http://dl.bintray.com/kaleidos/maven' }
+    maven { url 'https://maven.fabric.io/public' }
   }
 
   dependencies {
-    classpath 'com.android.tools.build:gradle:1.5.0'
-    classpath 'org.codehaus.groovy:gradle-groovy-android-plugin:0.3.9'
+    classpath 'com.android.tools.build:gradle:2.1.0'
+    classpath 'org.codehaus.groovy:gradle-groovy-android-plugin:0.3.10'
+    classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'
     classpath 'net.kaleidos.gradle.plugins:emerger:0.0.2'
+    classpath 'io.fabric.tools:gradle:1.21.6'
   }
 }
 
 repositories {
   jcenter()
+  maven { url 'https://maven.fabric.io/public' }
 }
 
 apply plugin: 'com.android.application'
 apply plugin: 'groovyx.grooid.groovy-android'
+apply plugin: 'com.neenbedankt.android-apt' // must be after groovy plugin
 apply plugin: 'net.kaleidos.gradle.plugins.emerger'
+apply plugin: 'io.fabric'
 apply from: "$rootDir/gradle/extraAndroidTasks.gradle"
+
+ext {
+  groovyVersion = '2.4.6'
+  spockVersion = '1.0-groovy-2.4'
+  retrofitVersion = '2.0.0-beta4'
+  rxJavaVersion = '1.1.1'
+  rxAndroidVersion = '1.1.0'
+  androidSupportVersion = '23.4.0'
+}
 
 android {
   compileSdkVersion 23
-  buildToolsVersion '23.0.2'
+  buildToolsVersion '23.0.3'
 
   defaultConfig {
     minSdkVersion 16
@@ -31,7 +46,7 @@ android {
     versionCode 1
     versionName '1.0.0'
 
-    signingConfig signingConfigs.debug
+    multiDexEnabled = true
 
     testInstrumentationRunner 'android.support.test.runner.AndroidJUnitRunner'
   }
@@ -43,17 +58,25 @@ android {
       keyAlias 'androiddebugkey'
       keyPassword 'android'
     }
+    release {
+      storeFile file("$keystorePath")
+      storePassword "$keystorePassword"
+      keyAlias "$storeKeyAlias"
+      keyPassword "$aliasKeyPassword"
+    }
   }
 
   buildTypes {
     debug {
       applicationIdSuffix '.dev'
-
       minifyEnabled false
+      signingConfig signingConfigs.debug
     }
     release {
       minifyEnabled true
+      shrinkResources true
       proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+      signingConfig signingConfigs.release
     }
   }
 
@@ -63,41 +86,61 @@ android {
   }
 
   lintOptions {
-    disable 'InvalidPackage' // lint sees references in the grooid jar to unavailable java classes
+    textReport true
+    textOutput 'stdout'
+    warning 'InvalidPackage' // lint sees references in the grooid jar to unavailable java classes
+  }
+
+  dexOptions {
+    javaMaxHeapSize '4G'
+  }
+
+  packagingOptions {
+    exclude 'META-INF/LICENSE.txt'
   }
 }
 
 androidGroovy {
+  // setup custom groovy compile options
   options {
     configure(groovyOptions) {
       javaAnnotationProcessing = true
+      configurationScript = file("$projectDir/config/groovy-compile-options.groovy")
     }
   }
-  skipJavaC = true
+  // skip javac MUST be false for not set for apt to work correctly
 }
 
 dependencies {
-  compile 'org.codehaus.groovy:groovy:2.4.5:grooid'
+  compile(project(":extensions")) {
+    exclude group: 'org.codehaus.groovy'
+  }
 
-  compile 'com.android.support:support-v4:23.2.0'
-  compile 'com.android.support:appcompat-v7:23.2.0'
-  compile 'com.android.support:recyclerview-v7:23.2.0'
-  compile 'com.android.support:design:23.2.0'
-  compile 'com.android.support:support-annotations:23.2.0'
+  compile "org.codehaus.groovy:groovy:$groovyVersion:grooid"
+
+  compile 'com.android.support:multidex:1.0.1'
+
+  compile 'com.arasthel:swissknife:1.4.0'
+
+  compile "com.android.support:support-v4:$androidSupportVersion"
+  compile "com.android.support:appcompat-v7:$androidSupportVersion"
+  compile "com.android.support:recyclerview-v7:$androidSupportVersion"
+  compile "com.android.support:design:$androidSupportVersion"
+  compile "com.android.support:support-annotations:$androidSupportVersion"
 
   compile 'com.squareup.dagger:dagger:1.2.2'
-  provided 'com.squareup.dagger:dagger-compiler:1.2.2'
+  apt 'com.squareup.dagger:dagger-compiler:1.2.2'
 
-  compile 'io.reactivex:rxjava:1.1.0'
-  compile 'io.reactivex:rxandroid:1.1.0'
+  compile "io.reactivex:rxjava:$rxJavaVersion"
+  compile "io.reactivex:rxandroid:$rxAndroidVersion"
 
   compile 'com.squareup.okhttp3:okhttp:3.1.1'
   compile 'com.squareup.okhttp3:logging-interceptor:3.1.1'
   compile 'com.squareup.picasso:picasso:2.5.2'
   compile 'com.jakewharton.picasso:picasso2-okhttp3-downloader:1.0.1'
-  compile 'com.squareup.retrofit2:retrofit:2.0.0-beta4'
-  compile 'com.squareup.retrofit2:converter-moshi:2.0.0-beta4'
-  compile 'com.squareup.retrofit2:adapter-rxjava:2.0.0-beta4'
+  compile "com.squareup.retrofit2:retrofit:$retrofitVersion"
+  compile "com.squareup.retrofit2:converter-moshi:$retrofitVersion"
+  compile "com.squareup.retrofit2:adapter-rxjava:$retrofitVersion"
 
   compile 'com.f2prateek.rx.preferences:rx-preferences:1.0.0'
 
@@ -105,21 +148,46 @@ dependencies {
   compile 'com.jakewharton.byteunits:byteunits:0.9.1'
   compile 'com.jakewharton.threetenabp:threetenabp:1.0.2'
 
-  compile 'com.arasthel:swissknife:1.4.0'
+  compile 'com.andrewreitz.velcro:velcro-betterviewanimator:1.0.1@aar'
+
+  releaseCompile('com.crashlytics.sdk.android:crashlytics:2.5.5@aar') {
+    transitive = true
+  }
+
+  debugCompile 'com.facebook.stetho:stetho:1.3.1'
+  debugCompile 'com.facebook.stetho:stetho-okhttp3:1.3.1'
+  debugCompile 'com.facebook.stetho:stetho-timber:1.3.1@aar'
 
   debugCompile 'com.squareup.leakcanary:leakcanary-android:1.3.1'
   releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.3.1'
 
   androidTestCompile 'com.andrewreitz:spock-android:1.2.1'
-  androidTestCompile 'org.spockframework:spock-core:1.0-groovy-2.4'
   androidTestCompile 'com.android.support.test:runner:0.4.1'
   androidTestCompile 'com.google.dexmaker:dexmaker:1.2'
+  androidTestCompile "org.spockframework:spock-core:$spockVersion"
 
-  testCompile 'org.spockframework:spock-core:1.0-groovy-2.4'
+  testCompile 'org.robospock:robospock:1.0.0'
 }
 
 configurations.all {
-  resolutionStrategy.force 'com.android.support:support-annotations:23.0.1'
+  resolutionStrategy.force "com.android.support:support-annotations:$androidSupportVersion"
   resolutionStrategy.force 'org.codehaus.groovy:groovy:2.4.5:grooid'
   resolutionStrategy.force 'junit:junit:4.12'
+}
+
+// APT doesn't know to make these directories for tests. Force them to
+// be written.
+afterEvaluate {
+  def createAptTestDirs = tasks.create('createAptTestDirs')
+  createAptTestDirs.doFirst {
+    file("$buildDir/generated/source/apt/test/debug").mkdirs()
+    file("$buildDir/generated/source/apt/test/release").mkdirs()
+  }
+  tasks.getByName('mockableAndroidJar').finalizedBy(createAptTestDirs)
+}
+
+tasks.withType(Test) {
+  testLogging {
+    exceptionFormat 'full'
+  }
 }

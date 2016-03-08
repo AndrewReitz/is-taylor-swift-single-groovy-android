@@ -4,6 +4,9 @@ import groovy.transform.CompileStatic
 
 @CompileStatic abstract class Modules {
   static Object[] list(IsApp app) {
-    return [new IsModule(app)].toArray()
+    return [
+        new IsModule(app),
+        new DebugIsModule()
+    ].toArray()
   }
 }

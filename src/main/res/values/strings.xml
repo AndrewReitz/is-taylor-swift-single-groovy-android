@@ -3,4 +3,18 @@
 <resources>
   <string name="application_name">Is Taylor Swift Single</string>
   <string name="launcher_name">Is T-Swift Single</string>
+  <string name="error_title">Opps!</string>
+  <string name="error_message">There was an error loading the data.\nPlease try again later.</string>
+  <string name="toolbar_title">Is Taylor Swift Single?</string>
+  <string name="is_single_no">No!</string>
+  <string name="is_single_yes">YES!</string>
+  <string name="days_since_single" formatted="false">Taylor Swift\'s last relationship started %s days ago and she\'s been in %s relationships</string>
+  <string name="days_single" formatted="false">Taylor Swift\'s last relationship ended %s days ago. It was with %s</string>
+  <string name="in_case_you_were_interested">In case you were interested:</string>
+  <string name="in_case_you_were_interested_data" formatted="false">
+    Her average relationship is %.1f days long. Her average time between relationships is %.1f days.
+    The average age of her companions is %.1f when they start dating. She\'s written %d songs about
+    them, averaging %.1f each.
+  </string>
+  <string name="see_the_data"><a href="http://peterhajas.com/istaylorswiftsingle/data.json">See the data</a></string>
 </resources>

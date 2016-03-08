@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.andrewreitz.taylor.ui.single.IsSingleView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+
+  <android.support.v7.widget.Toolbar
+      android:id="@+id/is_single_toolbar"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:background="?attr/colorPrimary"
+      android:elevation="4dp"
+      android:minHeight="?attr/actionBarSize"
+      android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+      tools:ignore="UnusedAttribute"
+      >
+
+    <TextView
+        android:id="@+id/trending_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/toolbar_title"
+        android:textAppearance="@style/TextAppearance.Widget.AppCompat.Toolbar.Title"
+        />
+
+  </android.support.v7.widget.Toolbar>
+
+  <com.andrewreitz.velcro.betterviewanimator.BetterViewAnimator
+      android:id="@+id/is_single_animator"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:inAnimation="@android:anim/fade_in"
+      android:outAnimation="@android:anim/fade_out"
+      >
+
+
+    <ProgressBar
+        android:id="@+id/is_single_progress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        />
+
+    <!-- Error Layout -->
+    <RelativeLayout
+        android:id="@+id/is_single_error"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        >
+
+      <TextView
+          android:id="@+id/is_single_error_title"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_centerInParent="true"
+          android:gravity="center_horizontal"
+          android:text="@string/error_title"
+          android:textSize="34sp"
+          android:textColor="?android:attr/textColorPrimary"
+          />
+
+      <TextView
+          android:id="@+id/trending_loading_message"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_below="@id/is_single_error_title"
+          android:layout_centerHorizontal="true"
+          android:gravity="center_horizontal"
+          android:text="@string/error_message"
+          android:textColor="?android:attr/textColorPrimary"
+          />
+
+    </RelativeLayout>
+
+    <!-- Main Content -->
+    <ScrollView
+        android:id="@+id/is_single_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        >
+      <RelativeLayout
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          >
+
+        <ImageView
+            android:id="@+id/is_single_eyes_image"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:layout_marginBottom="8dp"
+            tools:background="#ff00ff"
+            tools:ignore="ContentDescription"
+            />
+
+        <TextView
+            android:id="@+id/is_single_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@id/is_single_eyes_image"
+            android:textSize="34sp"
+            android:textColor="?android:attr/textColorPrimary"
+            tools:text="NO!"
+            />
+
+        <TextView
+            android:id="@+id/is_single_number_of_days"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/is_single_status"
+            android:textAppearance="?android:textAppearanceMedium"
+            android:layout_centerHorizontal="true"
+            android:gravity="center"
+            android:layout_margin="16dp"
+            tools:text="Taylor Swift's last relationship started 315 days ago and she's been in 8 relationships"
+            />
+
+        <TextView
+            android:id="@+id/is_single_interested_header"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:textAppearance="?android:textAppearanceLarge"
+            android:text="@string/in_case_you_were_interested"
+            android:layout_below="@id/is_single_number_of_days"
+            android:layout_marginBottom="8dp"
+            />
+
+        <TextView
+            android:id="@+id/is_single_interested_stats"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:textAppearanceMedium"
+            android:layout_below="@id/is_single_interested_header"
+            android:layout_centerHorizontal="true"
+            android:layout_marginRight="16dp"
+            android:layout_marginLeft="16dp"
+            android:gravity="center"
+            tools:text="@string/in_case_you_were_interested_data"
+            />
+
+        <com.andrewreitz.taylor.ui.LinkTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:text="@string/see_the_data"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@id/is_single_interested_stats"
+            />
+
+      </RelativeLayout>
+    </ScrollView>
+  </com.andrewreitz.velcro.betterviewanimator.BetterViewAnimator>
+</com.andrewreitz.taylor.ui.single.IsSingleView>

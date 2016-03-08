@@ -1,0 +1,31 @@
+repositories {
+  jcenter()
+}
+
+apply plugin: 'groovy'
+
+description = 'Extension methods for main project'
+
+sourceCompatibility = JavaVersion.VERSION_1_7
+targetCompatibility = JavaVersion.VERSION_1_7
+
+dependencies {
+  compile "org.codehaus.groovy:groovy:$groovyVersion"
+  compile "com.squareup.retrofit2:adapter-rxjava:$retrofitVersion"
+
+  compile "io.reactivex:rxjava:$rxJavaVersion"
+
+  testCompile "org.spockframework:spock-core:$spockVersion"
+  testCompile 'cglib:cglib:3.2.1'
+}
+
+configurations.all {
+  resolutionStrategy.force 'junit:junit:4.12'
+}
+
+tasks.withType(Test) {
+  testLogging {
+    exceptionFormat "full"
+  }
+}
+

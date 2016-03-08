@@ -3,9 +3,11 @@ package com.andrewreitz.taylor.data.api.model
 import com.squareup.moshi.Json
 import groovy.transform.CompileStatic
 import groovy.transform.Immutable
+import groovy.transform.ToString
 import org.threeten.bp.Instant
 
 @Immutable(knownImmutableClasses = [Instant])
+@ToString(includeNames = true)
 @CompileStatic
 class IsTaylorSwiftSingleData {
   final String name

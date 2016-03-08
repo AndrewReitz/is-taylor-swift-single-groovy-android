@@ -1,0 +1,3 @@
+moduleName = andrewreitz-groovy-module
+moduleVersion = 1.0
+extensionClasses = com.andrewreitz.groovy.runtime.ResultExtensions

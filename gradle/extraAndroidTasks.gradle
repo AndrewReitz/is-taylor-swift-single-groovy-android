@@ -1,5 +1,6 @@
-// Adds extra tasks to improve android usage
-
+/**
+ * Adds a task to install and run the android application.
+ */
 project.android.applicationVariants.all {
   it.buildType*.name.each { buildType ->
     def adb = new File(project.android.sdkDirectory as File, '/platform-tools/adb')
@@ -18,19 +19,6 @@ project.android.applicationVariants.all {
         }.'@android:name'
 
         commandLine "bash", "-c", "$adb shell am start -n ${manifest.@package}/$startActivity"
-      }
-    }
-
-    task "reinstall$buildTypeString"(type: Exec, group: 'install') {
-      description = "Attempts to install the previous built $buildTypeString apk instead of using install$buildTypeString"
-
-      doFirst {
-        def alignedFile = new File(buildDir, "/outputs/apk/$project.name-${buildType}.apk")
-        def unalignedFile = new File(buildDir, "/outputs/apk/$project.name-$buildType-unaligned.apk")
-
-        def apk = alignedFile.exists() ? alignedFile : unalignedFile
-
-        commandLine "bash", "-c", "$adb install -r $apk"
       }
     }
   }
