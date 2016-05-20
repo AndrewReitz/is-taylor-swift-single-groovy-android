@@ -18,6 +18,7 @@ groovy to run on Android.
 
 - debug drawer
 - automated/functional tests
+- setup ci
 
 ## License
 
